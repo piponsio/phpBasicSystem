@@ -1,57 +1,143 @@
-# CodeIgniter 4 Framework
+# phpBasicSystem
+Based on the CodeIgniter4 framework, phpBasicSystem or PBS it was created to quickly generate websites suitable for beginners and experts through its intuitive interfaces and its simple but powerful architecture.
 
-## What is CodeIgniter?
+## Installation for Linux Debian
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible, and secure. 
-More information can be found at the [official site](http://codeigniter.com).
+1. **Download phpBasicSystem**
 
-This repository holds the distributable version of the framework,
-including the user guide. It has been built from the 
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+Go to www directory and clone this repository.
+If you not have git installed, install.
+```
+sudo apt-get install git
+cd /var/www
+sudo git clone https://github.com/piponsio/phpBasicSystem.git site-example
+sudo chown -R www-data:www-data site-example
+cd site-example
+sudo chmod 775 writable
+```
 
-More information about the plans for version 4 can be found in [the announcement](http://forum.codeigniter.com/thread-62615.html) on the forums.
+2. **Install necessary programs**
+```
+sudo apt-get install apache2 php php-mysql php-intl php-mbstring php-mysqlnd mariadb-server -y 
+```
 
-The user guide corresponding to this version of the framework can be found
-[here](https://codeigniter4.github.io/userguide/). 
+3. **Config apache**
+
+First is need activate mysql driver.
+```
+sudo phpenmod mysqli
+```
+Activate rewrite mode.
+```
+sudo a2enmod rewrite
+```
+We create and modify the configuration file of our site.
+
+```
+sudo nano /etc/apache2/sites-available/site-example.conf
+```
+Notes:
+* *nano is a text editor, you can use the one you prefer.*
+* *site-example is the name of the configuration file of your site, this name can be any but terminated in .conf, in addition it can exist previously or be created with this command.*
+
+**/etc/apache2/sites-available/site-example.conf**
+```
+<VirtualHost *:80>
+	ServerAdmin webmaster@site-example.com
+	DocumentRoot /var/www/site-example/public
+
+	ServerName site-example.com
+	ServerAlias www.site-example.com
+
+	RewriteEngine on
+
+	<Directory '/var/www/site-example/public'>
+		AllowOverride All
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+```
+Notes:
+* *If your site is a local site, use localhost like Servername.*
+
+After modifying the file we proceed to activate it and restart apache2.
+```
+sudo a2ensite site-example.conf
+sudo systemctl restart apache2
+```
+
+4. **Config MariaDB**
+
+Go to mariadb like root user.
+```
+sudo mariadb
+```
+Create a user and database, if you have this skip this step.
+
+Create user and give privileges.
+```
+CREATE USER 'my-user'@'localhost' IDENTIFIED BY 'my-password';
+GRANT ALL PRIVILEGES ON * . * TO 'my-user'@'localhost';
+```
+Create database and exit.
+```
+CREATE DATABASE my-db;
+exit
+```
+
+5. **Config phpBasicSystem**
+
+Go to config directory and edit config.php and database.php.
+```
+sudo nano /var/www/site-example/app/Config/App.php
+```
+In the 26 line put your base url.
+
+**/var/www/site-example/application/config/config.php**
+```
+public $baseURL = 'http://www.site-example.com/';
+```
+Notes:
+* *If your site is a local site, use http://localhost/ like baseUrl*
 
 
-## Important Change with index.php
+Using the data in the step 4, we will complete the database config.
+```
+sudo nano /var/www/site-example/app/Config/Database.php
+```
+Modify the section.
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+**/var/www/site-example/application/config/database.php**
+```
+public $default = [
+	'DSN'      => '',
+	'hostname' => 'localhost',
+	'username' => 'my-user',
+	'password' => 'my-password',
+	'database' => 'my-db',
+	'DBDriver' => 'MySQLi',
+	'DBPrefix' => '',
+	'pConnect' => false,
+	'DBDebug'  => (ENVIRONMENT !== 'production'),
+	'cacheOn'  => false,
+	'cacheDir' => '',
+	'charset'  => 'utf8',
+	'DBCollat' => 'utf8_general_ci',
+	'swapPre'  => '',
+	'encrypt'  => false,
+	'compress' => false,
+	'strictOn' => false,
+	'failover' => [],
+	'port'     => 3306,
+];
+``` 
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+6. **Install PhpBasicSystem**
 
-**Please** read the user guide for a better explanation of how CI4 works!
-The user guide updating and deployment is a bit awkward at the moment, but we are working on it!
+Open your favorite browser and go to your base url http://www.site-example.com/install, follow the instructions and complete the last form.
 
-## Repository Management
-
-We use Github issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
-
-This repository is a "distribution" one, built by our release preparation script. 
-Problems with it can be raised on our forum, or as issues in the main repository.
-
-## Contributing
-
-We welcome contributions from the community.
-
-Please read the [*Contributing to CodeIgniter*](https://github.com/codeigniter4/CodeIgniter4/blob/develop/contributing.md) section in the development repository.
-
-## Server Requirements
-
-PHP version 7.2 or higher is required, with the following extensions installed: 
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php)
-- xml (enabled by default - don't turn it off)
+## Apply latest updates in my project
+*Pending...*
