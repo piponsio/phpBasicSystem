@@ -8,15 +8,17 @@ class Install extends Controller{
 	public function index(){
 		echo view('system/install/home');
 	}
-	public function setting($param = ""){
+	public function form($param = ""){
 		$inputs = $this->request->getPost(["site_title", "language", "login", "pass", "pass-confirmation", "register", "utc"]);
 		$data = ["error" => -1, "inputs" => $inputs];
-		if(empty($inputs["site_title"])) $data["error"] = 1;
-		elseif(empty($inputs["language"])) $data["error"] = 2;
-		elseif(empty($inputs["login"])) $data["error"] = 3;
-		elseif(empty($inputs["pass"]) || ($inputs["pass"] != $inputs["pass-confirmation"])) $data["error"] = 4;
-		else $data["error"] = 0;
-
+		if($param == "process"){
+			if(empty($inputs["site_title"])) $data["error"] = 1;
+			elseif(empty($inputs["language"])) $data["error"] = 2;
+			elseif(empty($inputs["login"])) $data["error"] = 3;
+			elseif(empty($inputs["pass"]) || ($inputs["pass"] != $inputs["pass-confirmation"])) $data["error"] = 4;
+			else $data["error"] = 0;
+		}
+		
 		if($data["error"] != 0) echo view('system/install/form',$data);
 		else{
 			$this->UserModel = model('App\Models\UserModel');

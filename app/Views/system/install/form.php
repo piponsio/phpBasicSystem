@@ -17,7 +17,7 @@
 ?>
 </p>
 <h1>Setting</h1>
-<form action="/install/setting/process" method="post" id="setting">
+<form action="/install/form/process" method="post" id="setting">
 <table>
 	<tbody>
     <tr>
