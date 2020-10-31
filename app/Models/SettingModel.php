@@ -15,9 +15,27 @@ class SettingModel extends eCrisisModel{
         "title VARCHAR(30) NOT NULL",
         "language VARCHAR(2) NOT NULL DEFAULT 'EN'",
         "register BOOLEAN NOT NULL DEFAULT 0",
-        "utc DECIMAL(4,2) NOT NULL DEFAULT 0"
+        "utc DECIMAL(4,2) NOT NULL DEFAULT 0",
+        "created_at INT NOT NULL DEFAULT 0",
+        "updated_at INT NOT NULL DEFAULT 0",
+        "deleted_at INT NOT NULL DEFAULT 0"
     ];
     protected $foreignKeys = [];
+
+    protected $returnType = 'array';
+    protected $useSoftDeletes = true;
+
+    protected $allowedFields = ["db_version", "title", "language", "register", "utc"];
+
+    protected $useTimestamps = true;
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
+    protected $deletedField = 'deleted_at';
+	protected $dateFormat = 'int';
+
+	public function getSystemDBVersion(){
+		return $this->system_db_version;
+	}
 }
 
 ?>

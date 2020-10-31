@@ -4,35 +4,18 @@ use CodeIgniter\Model;
 
 // existentialCrisis
 abstract class eCrisisModel extends Model{
-	
-    protected $table = '';
-    protected $primaryKey = '';
+
     protected $prefix = '';
-    protected $columns = [];
-    protected $foreignKeys = [];
-
-    protected $returnType = 'array';
-    protected $useSoftDeletes = true;
-
-    protected $allowedFields = [];
-
-    protected $useTimestamps = false;
-    protected $createdField = 'created_at';
-    protected $updatedField = 'updated_at';
-    protected $deletedField = 'deleted_at';
-
-    protected $validationRules = [];
-    protected $validationMessages = [];
-    protected $skipValidation = false;
-
     protected $exists = false;
-   
+    protected $builder;
 	public function __construct(...$params){
 		parent::__construct(...$params);
         //"I am therefore I think"
-		$query = $this->db->query("SHOW TABLES LIKE '".$this->prefix.$this->table."'");
-        if($this->db->affectedRows() > 0) $this->exists = true;
-		if(!$this->exists && !empty($this->table)) $this->creatingMe();
+        if(!$this->db->tableExists($this->prefix.$this->table)){
+			$this->creatingMe();
+            $this->exists = true;
+		}
+        $this->builder = $this->db->table($this->table);
 	}
 
 	public function creatingMe(){
@@ -46,8 +29,7 @@ abstract class eCrisisModel extends Model{
             }
             if(is_array($this->foreignKeys)){
                 for($i = 0; $i < count($this->foreignKeys); $i++) $a .= ($i>0)?(", ".$this->foreignKeys[$i]):($this->foreignKeys[$i]);
-            }
-            
+            }            
             $a .= ");";
             $this->db->query($a);
         }
